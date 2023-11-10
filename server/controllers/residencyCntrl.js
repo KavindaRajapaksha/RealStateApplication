@@ -1,5 +1,5 @@
-const asyncHandler = require('express-async-handler');
-const { prisma } = require('../config/prismaconfig.js');
+const asyncHandler = require("express-async-handler");
+const { prisma } = require("../config/prismaconfig.js");
 
 const createResidency = asyncHandler(async (req, res) => {
   const {
@@ -47,4 +47,23 @@ const createResidency = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createResidency };
+const getAllResidencies = asyncHandler(async (req, res) => {
+  const residencies = await prisma.residency.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  res.send(residencies);
+});
+
+const getResidencyById = asyncHandler(async (req, res) => {
+  const {id}=req.params;
+  const residency = await prisma.residency.findUnique({
+    where: {
+      id
+    },
+  });
+  res.send(residency);
+});
+
+module.exports = { createResidency, getAllResidencies ,getResidencyById};
